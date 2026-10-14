@@ -1,0 +1,29 @@
+
+=== Step 1. The victim generates a secp256k1 key pair ===
+  private key d (secret): 0xa48b4dd5bb1d986e9f563d7dae1532bc2abe60ba28aa2e2b5ee484f88da63bc7
+
+=== Step 2. The broken signer reuses the SAME nonce k for two different messages ===
+  message 1: 'Send 10 coins to Alice'
+  message 2: 'Send 50 coins to Bob'
+  signature 1: r = 0x9377c312145a5afb911bf9e8c067bcf6094c533603687850df502b61290bbf5e
+               s = 0x42fade080a5837e0c4a88e1b86d6ab8f848d25db0f22c739274c6a8078d0cf41
+  signature 2: r = 0x9377c312145a5afb911bf9e8c067bcf6094c533603687850df502b61290bbf5e
+               s = 0x3fd9489dac03ea53fb42b47cb8c82cf794fc5b0943f623ab069549ea0d3609a7
+
+=== Step 3. Both signatures are valid, and r1 == r2 (the tell-tale sign) ===
+  signature 1 valid: True
+  signature 2 valid: True
+  r1 == r2: True  <- r comes from k alone, so reusing k makes it repeat
+
+=== Step 4. The attacker recovers the private key from the two signatures ===
+  recovered nonce k: 0x1234567890abcdef1234567890abcdef
+  recovered key   d: 0xa48b4dd5bb1d986e9f563d7dae1532bc2abe60ba28aa2e2b5ee484f88da63bc7
+
+=== Step 5. Proof: the recovered key equals the real one and can forge a new signature ===
+  recovered d == real d: True
+  attacker signs 'Send ALL coins to the attacker'
+  the victim's own public key accepts the forged signature: True
+
+=== Step 6. The fixes ===
+  Fix A, different k each time -> r1 != r2: True  (but you still depend on the RNG)
+  Fix B, RFC 6979 deterministic -> r1 != r2: True  (no RNG needed; this is the real fix)

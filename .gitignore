@@ -1,0 +1,19 @@
+# Python / uv
+.venv/
+__pycache__/
+
+# Everything the demos generate: keys, release files, restic repo
+out/
+
+# Never commit keys or secrets
+keys/
+*.pem
+*.key
+.env
+
+# Lecture slides (course material, 8 MB)
+docs/*.pptx
+
+# macOS
+.DS_Store
+CLAUDE.md

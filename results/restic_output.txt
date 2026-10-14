@@ -1,0 +1,71 @@
+### restic init
+created restic repository 7e28854759 at out/restic/repo
+
+Please note that knowledge of your password is required to access
+the repository. Losing your password means that your data is
+irrecoverably lost.
+
+### restic backup
+no parent snapshot found, will read all files
+
+Files:           2 new,     0 changed,     0 unmodified
+Dirs:            3 new,     0 changed,     0 unmodified
+Added to the repository: 1.910 MiB (1.909 MiB stored)
+
+processed 2 files, 1.907 MiB in 0:00
+snapshot 4806dbe3 saved
+
+### restic check --read-data (healthy)
+using temporary cache in /var/folders/93/xb4ky48x0lz92gwb1_0f1l580000gp/T/restic-check-cache-2141191147
+create exclusive lock for repository
+load indexes
+check all packs
+check snapshots, trees and blobs
+[0:00] 100.00%  1 / 1 snapshots
+read all data
+[0:00] 100.00%  2 / 2 packs
+no errors were found
+
+### tamper with largest data pack
+pack: out/restic/repo/data/d7/d76565abac422a3cf510b46237fc7260d07ef085113c8789822aef4c53110de2
+16+0 records in
+16+0 records out
+16 bytes transferred in 0.000167 secs (95808 bytes/sec)
+
+### restic check (plain) -> passes
+using temporary cache in /var/folders/93/xb4ky48x0lz92gwb1_0f1l580000gp/T/restic-check-cache-4052284160
+create exclusive lock for repository
+load indexes
+check all packs
+check snapshots, trees and blobs
+[0:00] 100.00%  1 / 1 snapshots
+no errors were found
+exit: 0
+
+### restic check --read-data -> FAILS
+using temporary cache in /var/folders/93/xb4ky48x0lz92gwb1_0f1l580000gp/T/restic-check-cache-2397073221
+create exclusive lock for repository
+load indexes
+check all packs
+check snapshots, trees and blobs
+[0:00] 100.00%  1 / 1 snapshots
+read all data
+pack d76565abac422a3cf510b46237fc7260d07ef085113c8789822aef4c53110de2 contains 2 errors: [blob 2162581a85a817684ae1fa620887e848693d61bbe8869db9cf1b1add28dd5a2c: decrypting blob <data/2162581a> from pack d76565abac422a3cf510b46237fc7260d07ef085113c8789822aef4c53110de2 failed: ciphertext verification failed unexpected pack id 735378e15e751dbf2db6c186976e3d305db0a75b616318e61c79482d5ac780c4]
+[0:00] 100.00%  2 / 2 packs
+
+The repository contains damaged pack files. These damaged files must be removed to repair the repository. This can be done using the following commands. Please read the troubleshooting guide at https://restic.readthedocs.io/en/stable/077_troubleshooting.html first.
+
+restic repair packs d76565abac422a3cf510b46237fc7260d07ef085113c8789822aef4c53110de2
+restic repair snapshots --forget
+
+Damaged pack files can be caused by backend problems, hardware problems or bugs in restic. Please open an issue at https://github.com/restic/restic/issues/new/choose for further troubleshooting!
+Fatal: repository contains errors
+exit: 1
+
+### restic restore -> refuses bad file
+restoring snapshot 4806dbe3 of [/Users/pockov4chan/StudySpace/5_cryptography/out/restic/src] at 2026-10-14 19:21:43.760384 +0500 +05 by pockov4chan@pockov4mac to out/restic/restore
+ignoring error for /out/restic/src/big.bin: decrypting blob <data/2162581a> from pack d76565abac422a3cf510b46237fc7260d07ef085113c8789822aef4c53110de2 failed: ciphertext verification failed
+ignoring error for /out/restic/src/big.bin: lchown /Users/pockov4chan/StudySpace/5_cryptography/out/restic/restore/out/restic/src/big.bin: no such file or directory
+Summary: Restored 4 / 5 files/dirs (19 B / 1.907 MiB) in 0:00
+Fatal: There were 2 errors
+exit: 1

@@ -1,0 +1,35 @@
+
+=== Step 1. Developer generates an Ed25519 key pair ===
+  public key (32 bytes): a1dc3b622f4db053a92c6a13fc3a83a2aecac8add9c8019a68ec28e7b97c359c
+  published at: out/case1/trusted/developer-public-key.pem
+
+=== Step 2. Developer signs the release and uploads release + signature + checksum to the mirror ===
+  out/case1/mirror/release-v1.0.tar.gz
+  out/case1/mirror/release-v1.0.tar.gz.sig  (64 bytes: d9337c2e20c7291699796e9805a62df1...)
+  out/case1/mirror/release-v1.0.tar.gz.sha256
+
+=== Step 3. User downloads the files and verifies them with the developer's public key ===
+  checksum check:  OK
+  signature check: OK
+
+=== Step 4. Why not just a checksum? An attacker takes over the mirror ===
+  checksum check:  OK
+  signature check: FAIL
+  -> the checksum is fooled: it only proves integrity
+  -> the signature is not:   it proves integrity + authenticity
+
+=== Step 5. Change a single byte of the genuine release ===
+  sha256 of the original: 2eeb81b769a2aae180ac5d0dc264f649...
+  sha256 of the tampered: 591b9d2faea1919411125392e7461fc3...
+  signature check: FAIL
+
+=== Step 6. Attacker signs the malware with their own key pair ===
+  check with the attacker's public key:  OK
+  check with the developer's public key: FAIL
+
+=== Step 7. Where does the nonce come from? Sign twice and compare ===
+  release v1.0, signed once:  R = d9337c2e20c7291699796e9805a62df1...
+  release v1.0, signed again: R = d9337c2e20c7291699796e9805a62df1...
+  release v1.1:               R = 5dda21ceebac79b74f0e5baeef45a011...
+  same message  -> identical signatures: True
+  other message -> different nonce:      True

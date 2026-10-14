@@ -1,0 +1,9 @@
+[project]
+name = "cryptolab"
+version = "0.1.0"
+description = "Lab 5: cryptography demos (Ed25519 signing, ECDSA nonce reuse, restic)"
+requires-python = ">=3.11"
+dependencies = [
+    "cryptography>=50.0.2",
+    "ecdsa>=0.19.2",
+]
