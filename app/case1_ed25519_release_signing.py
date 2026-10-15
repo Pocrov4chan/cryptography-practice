@@ -1,12 +1,3 @@
-"""
-Case 1: signing a software release with Ed25519.
-
-A developer signs a release with their private key; users verify it with the developer's public key before
-installing. Shows that a checksum proves only integrity, while a signature proves integrity + authenticity.
-Real-world equivalents: OpenBSD signify, minisign, `ssh-keygen -Y sign`, Solana transaction signatures.
-
-Run from the repo root:  uv run app/case1_ed25519_release_signing.py
-"""
 import hashlib
 import shutil
 from pathlib import Path

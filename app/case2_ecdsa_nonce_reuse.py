@@ -1,16 +1,3 @@
-"""
-Case 2: breaking ECDSA by reusing the nonce ("the big lie of ECDSA").
-
-A broken signer uses the SAME one-time nonce k to sign two different messages. Anyone who sees the two signatures
-can then recover the private key with school algebra, and forge new signatures.
-Real cases: Sony PS3 (2010, constant k, master key recovered) and Android Bitcoin wallets (2013, SecureRandom bug).
-Reference: https://github.com/pcaversaccio/ecdsa-nonce-reuse-attack
-
-We use the `ecdsa` library only because it lets us force a chosen k; it is not side-channel hardened, so real
-code should use `cryptography` or libsecp256k1. The curve is secp256k1, the one Bitcoin and Ethereum use.
-
-Run from the repo root:  uv run app/case2_ecdsa_nonce_reuse.py
-"""
 import hashlib
 
 from ecdsa import SECP256k1, SigningKey
